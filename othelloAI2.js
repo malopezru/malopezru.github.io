@@ -1,6 +1,6 @@
 
 
-class AIAgentI {
+class AgentIvan {
     constructor() { }
 
     init(color, board, time = 20000) {
@@ -18,7 +18,7 @@ class AIAgentI {
 /*
 * A class for board operations (it is not the board but a set of operations over it)
 */
-class AIBoardI {
+class BoardIvan {
     constructor() { }
     // Initializes a board of the given size. A board is a matrix of size*size of characters ' ', 'B', or 'W'
     init(size) {
@@ -282,10 +282,10 @@ class AIBoardI {
 }
 
 
-class Agente_min_maxI extends AIAgentI {
+class Agente_min_maxI extends AgentIvan {
     constructor() {
         super();
-        this.board = new AIBoardI();
+        this.board = new BoardIvan();
     }
 
     compute(board, time) {
