@@ -282,26 +282,27 @@ class AIBoard {
 }
 
 
+        //////////////////////////////////////////////Agente de movimientos validos////////////////////////////////////////////////////
 //////////////////////////////////////////////Agente de movimientos validos////////////////////////////////////////////////////
-class Agente_min_max extends AIAgent {
+class Agente_min_max extends Agent {
     constructor() {
         super();
-        this.board = new AIBoard();
+        this.board = new Board();
     }
 
     compute(board, time) {
         var moves = this.board.valid_moves(board, this.color);
-        //this.shuffle(moves);
         var Mov_m;
         if (this.board.length <= 10) {
             Mov_m = this.minimax(board, this.color, 1000, -Infinity, Infinity);
         } else if (this.board.length <= 20) {
             Mov_m = this.minimax(board, this.color, 100, -Infinity, Infinity);
         } else if (this.board.length <= 30) {
-            Mov_m = this.minimax(board, this.color, 7, -Infinity, Infinity);
+            Mov_m = this.minimax(board, this.color, 5, -Infinity, Infinity);
         } else {
             Mov_m = this.minimax(board, this.color, 2, -Infinity, Infinity);
         }
+
         return moves[Mov_m.index];
     }
 
@@ -317,7 +318,7 @@ class Agente_min_max extends AIAgent {
         if (color === this.color) {
             var maxpuntaje = -Infinity;
 
-            for (var i = 0; i <= moves.length - (moves.length / 7); i++) {
+            for (var i = moves.length - 1; i >= 0; i--) {
                 var move = moves[i];
                 var tablero_temp = this.board.clone(board);
                 this.board.move(tablero_temp, move[0], move[1], color);
@@ -338,7 +339,7 @@ class Agente_min_max extends AIAgent {
         } else {
             var minpuntaje = Infinity;
 
-            for (var i = 0; i <= moves.length - (moves.length / 7); i++) {
+            for (var i = moves.length - 1; i >= 0; i--) {
                 var move = moves[i];
                 var tablero_temp = this.board.clone(board);
                 this.board.move(tablero_temp, move[0], move[1], color);
@@ -359,53 +360,42 @@ class Agente_min_max extends AIAgent {
         }
     }
 
-
     valor_tablero(board, color) {
-        var size = board.length; // Obtener el tamaño del tablero
-        var W = 0
-        var B = 0
+        var size = board.length;
+        var W = 0;
+        var B = 0;
         for (var i = 0; i < size; i++) {
             for (var j = 0; j < size; j++) {
                 if ((i === 0 && j === 0) || (i === 0 && j === size - 1) || (i === size - 1 && j === 0) || (i === size - 1 && j === size - 1)) {
-                    if (board[i][j] == 'W') W += 500;
-                    if (board[i][j] == 'B') B += 500;
+                    if (board[i][j] === 'W') {
+                        W += 500;
+                    }
+                    if (board[i][j] === 'B') {
+                        B += 500;
+                    }
+                } else if (i === 0 || j === 0) {
+                    if (board[i][j] === 'W') {
+                        W += 50;
+                    }
+                    if (board[i][j] === 'B') {
+                        B += 50;
+                    }
+                } else if (board[i][j] === 'W') {
+                    W++;
+                } else if (board[i][j] === 'B') {
+                    B++;
                 }
-                else if (i === 0 || j === 0) {
-                    if (board[i][j] == 'W') W += 150;
-                    if (board[i][j] == 'B') B += 150;
-                }
-                else if (board[i][j] == 'W') W++
-                else if (board[i][j] == 'B') B++
             }
-
         }
-        // Devuelve la cantidad de fichas volteadas encontradas
-        if (color == 'W') return W - B;
-        else return B - W;
-    }
 
+        if (color === 'W') {
+            return W - B;
+        } else {
+            return B - W;
+        }
+    }
 
     opponent(color) {
         return color === 'W' ? 'B' : 'W';
     }
-
-    //   shuffle(array) {
-    //   var currentIndex = array.length, temporaryValue, randomIndex;
-
-    //   // Mientras queden elementos a mezclar
-    //   while (0 !== currentIndex) {
-
-    //     // Selecciona un elemento sin mezclar
-    //     randomIndex = Math.floor(Math.random() * currentIndex);
-    //     currentIndex -= 1;
-
-    //     // Intercambia el elemento seleccionado con el elemento actual
-    //     temporaryValue = array[currentIndex];
-    //     array[currentIndex] = array[randomIndex];
-    //     array[randomIndex] = temporaryValue;
-    //   }
-
-    //   return array;
-    // }
 }
-
